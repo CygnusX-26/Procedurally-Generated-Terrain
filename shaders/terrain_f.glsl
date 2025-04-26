@@ -14,9 +14,7 @@ void main() {
     }
     else if (h > 0.5) {
         float t = (h - 0.5) / (0.95 - 0.5);
-        
-        // Use hash for subtle random variation based on world/UV position
-        float noise = hash(h * 10.0);  // tweak scale as needed
+        float noise = hash(h * 10.0);
 
         vec3 greenA = vec3(0.2, 0.5, 0.2);
         vec3 greenB = vec3(0.4, 0.8, 0.4);

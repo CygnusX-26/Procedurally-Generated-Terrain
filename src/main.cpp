@@ -10,6 +10,7 @@
 #include <GL/freeglut.h>
 
 #include "perlin.hpp"
+#include "tree.hpp"
 #include "config.hpp"
 
 #define HEIGHT (512)
@@ -51,7 +52,9 @@ void cleanup();
 int main(int argc, char** argv) {
 	Config configuration("terrainConfig.txt");
 	std::vector<glm::vec3> perlinNoise;
+	std::vector<glm::vec4> trees;
 	PerlinNoise perlin(configuration.getConfigPerlin());
+	TreeNoise treeNoise(configuration.getConfigTree());
 	float frequency = configuration.getConfigPerlinFreq();
 	for (int y = 0; y < HEIGHT; ++y) {
 		for (int x = 0; x < WIDTH; ++x) {
@@ -61,8 +64,12 @@ int main(int argc, char** argv) {
 			float centeredX = x - WIDTH / 2.0f;
         	float centeredY = y - HEIGHT / 2.0f;
 			perlinNoise.emplace_back(centeredX, noise, centeredY);
+			if (treeNoise.hasTree(noise, 95, 35, configuration.getConfigTreeFreq())) {
+				trees.emplace_back(centeredX, noise, centeredY, treeNoise.treeHeight());
+			}
 		}
 	}
+	// tree vec is x, y, z, tree height
 
 	try {
 		// Create the window and menu

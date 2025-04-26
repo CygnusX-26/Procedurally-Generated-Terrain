@@ -75,4 +75,43 @@ public:
         }
         return 5.0; // default freq
     }
+
+    int getConfigTree() {
+        bool tree = false;
+        for (std::string line : fileContents) {
+            if (line == "TREE:") {
+                tree = true;
+            }
+            else if (tree) {
+                return std::stoi(line);
+            }
+        }
+        return 1337; // default seed
+    }
+
+    float getConfigTreeFreq() {
+        bool freq = false;
+        for (std::string line : fileContents) {
+            if (line == "TREE_FREQ:") {
+                freq = true;
+            }
+            else if (freq) {
+                return std::stof(line);
+            }
+        }
+        return 0.01; // default freq
+    }
+
+    int getConfigRock() {
+        bool rock = false;
+        for (std::string line : fileContents) {
+            if (line == "ROCK:") {
+                rock = true;
+            }
+            else if (rock) {
+                return std::stoi(line);
+            }
+        }
+        return 1337; // default seed
+    }
 };
