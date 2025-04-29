@@ -89,6 +89,27 @@ public:
         return 1337; // default seed
     }
 
+    std::vector<float> getConfigTreeProp() {
+        std::vector<float> treePropVec; // default configuration
+        bool treeProps = false;
+        for (std::string line : fileContents) {
+            if (line == "TREE_PROPS:") {
+                treeProps = true;
+            }
+            else if (treeProps) {
+                std::stringstream ss(line);
+                std::string item;
+
+                while (std::getline(ss, item, ',')) {
+                    treePropVec.push_back(std::stof(trim(item)));
+                }
+                
+                return treePropVec;
+            }
+        }
+        return std::vector<float>({3.0f, 2.0f, 7.0f, 6.0f});
+    }
+
     float getConfigTreeFreq() {
         bool freq = false;
         for (std::string line : fileContents) {
@@ -113,5 +134,18 @@ public:
             }
         }
         return 1337; // default seed
+    }
+
+    float getConfigRockFreq() {
+        bool freq = false;
+        for (std::string line : fileContents) {
+            if (line == "ROCK_FREQ:") {
+                freq = true;
+            }
+            else if (freq) {
+                return std::stof(line);
+            }
+        }
+        return 0.01; // default freq
     }
 };

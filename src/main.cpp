@@ -11,6 +11,7 @@
 
 #include "perlin.hpp"
 #include "tree.hpp"
+#include "rock.hpp"
 #include "config.hpp"
 
 #define HEIGHT (512)
@@ -53,8 +54,10 @@ int main(int argc, char** argv) {
 	Config configuration("terrainConfig.txt");
 	std::vector<glm::vec3> perlinNoise;
 	std::vector<glm::vec4> trees;
+	std::vector<glm::vec3> rocks;
 	PerlinNoise perlin(configuration.getConfigPerlin());
 	TreeNoise treeNoise(configuration.getConfigTree());
+	RockNoise rockNoise(configuration.getConfigRock());
 	float frequency = configuration.getConfigPerlinFreq();
 	for (int y = 0; y < HEIGHT; ++y) {
 		for (int x = 0; x < WIDTH; ++x) {
@@ -67,6 +70,9 @@ int main(int argc, char** argv) {
 			if (treeNoise.hasTree(noise, 95, 35, configuration.getConfigTreeFreq())) {
 				trees.emplace_back(centeredX, noise, centeredY, treeNoise.treeHeight());
 			}
+			else if (rockNoise.hasRock(noise, 100, 0, configuration.getConfigRockFreq())) {
+				rocks.emplace_back(centeredX, noise, centeredY);
+			}
 		}
 	}
 	// tree vec is x, y, z, tree height
@@ -75,10 +81,12 @@ int main(int argc, char** argv) {
 		// Create the window and menu
 		initGLUT(&argc, argv);
 		initMenu();
+		std::vector<float> treeProps = configuration.getConfigTreeProp();
 		// Initialize OpenGL (buffers, shaders, etc.)
 		glState = std::unique_ptr<GLState>(new GLState());
 		glState->initializeGL();
-		glState->setupBuffers(perlinNoise);
+		glState->setupTerrain(perlinNoise, WIDTH, HEIGHT);
+		glState->setupTrees(trees, treeProps[0], treeProps[1], treeProps[2], treeProps[3]);
 
 	} catch (const std::exception& e) {
 		// Handle any errors

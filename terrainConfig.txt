@@ -1,14 +1,28 @@
+# perlin noise seed
 PERLIN:
-13
+131231
 
+# how frequent peaks and valleys occur
 PERLIN_FREQ:
 5.0
 
+# tree randomness seed
 TREE:
 1337
 
+# how often there are trees
 TREE_FREQ:
-0.001
+0.005
 
+# trunk: height, width
+# cone: height, width
+TREE_PROPS:
+3.0, 2.0, 7.0, 6.0
+
+# rock randomness seed
 ROCK:
 1337
+
+# How frequent the rocks are
+ROCK_FREQ:
+0.001

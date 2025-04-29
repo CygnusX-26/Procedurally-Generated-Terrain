@@ -9,6 +9,7 @@
 #include "mesh.hpp"
 #include "light.hpp"
 #include "texture.hpp"
+#include "treemesh.hpp"
 
 // Manages OpenGL state, e.g. camera transform, objects, shaders
 class GLState {
@@ -44,7 +45,9 @@ public:
 	void readConfig(std::string filename);	// Read from a config file
 
 	// =============================================================================
-	void setupBuffers(const std::vector<glm::vec3>& points); //setup points buffer
+	void setupTerrain(const std::vector<glm::vec3>& points, int width, int height); //setup terrain buffer
+	void setupTrees(const std::vector<glm::vec4>& points, float trunk_height, float trunk_width, float cone_height, float cone_width); //setup trees buffer
+	void setupRocks(const std::vector<glm::vec3>& points); //setup trees buffer
 
 	// Drawing modes
 	ShadingMode getShadingMode() const { return shadingMode; }
@@ -53,18 +56,6 @@ public:
 	void setShadingMode(ShadingMode sm);
 	void setNormalMapMode(NormalMapMode nmm);
 	void setShadowMapMode(ShadowMapMode smm);
-
-	// Object properties
-	float getAmbientStrength() const;
-	float getDiffuseStrength() const;
-	float getSpecularStrength() const;
-	float getSpecularExponent() const;
-	glm::vec3 getObjectColor() const;
-	void setAmbientStrength(float ambStr);
-	void setDiffuseStrength(float diffStr);
-	void setSpecularStrength(float specStr);
-	void setSpecularExponent(float specExp);
-	void setObjectColor(glm::vec3 color);
 
 	void setMaterialAttrs(
 		glm::vec3 floorColor, glm::vec3 cubeColor,
@@ -126,28 +117,22 @@ protected:
 	unsigned int activeObj = 1;   // The current active cube (1-3)
 	float moveStep = 0.1f;  // Translation step
 
-	// Textures
-	Texture textures;
-
+	int terrainWidth;
+	int terrainHeight;
 	// Shader state
 	GLuint shader;			       // GPU shader program
 	GLuint depthShader;	           // Depth shader program
 	GLuint terrainShader;
-	GLuint modelMatLoc;	           // Model-to-world matrix location, used in shader
-	GLuint modelMatDepthLoc;	   // Model-to-world matrix location, used in depth shader
-	GLuint lightSpaceMatLoc;       // World-to-light matrix location, used in shader
-	GLuint lightSpaceMatDepthLoc;  // World-to-light matrix location, used in depth shader
-	GLuint objTypeLoc;             // Object type location (decide which material attributes to use and which texture to map)
-	GLuint viewProjMatLoc;	       // World-to-clip matrix location
-	GLuint shadingModeLoc;	       // Shading mode location
-	GLuint normalMapModeLoc;       // Normal mapping mode location
-	GLuint shadowMapModeLoc;       // Shadow mapping mode location
-	GLuint camPosLoc;		       // Camera position location
-	GLuint floorColorLoc, cubeColorLoc;		    // Object color
-	GLuint floorAmbStrLoc, cubeAmbStrLoc;		// Ambient strength location
-	GLuint floorDiffStrLoc, cubeDiffStrLoc;		// Diffuse strength location
-	GLuint floorSpecStrLoc, cubeSpecStrLoc;		// Specular strength location
-	GLuint floorSpecExpLoc, cubeSpecExpLoc;		// Specular exponent location
+	GLuint treeShader;
+
+	GLuint terrainVao;
+	GLuint terrainVbo;
+	GLuint terrainEbo;
+	GLuint terrainIndexCount;
+
+	std::vector<glm::vec4> treePoints;
+	std::unique_ptr<TreeMesh> treeMesh;
+	
 	float cur_time;
 };
 
