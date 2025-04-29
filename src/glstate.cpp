@@ -86,6 +86,11 @@ void GLState::setupTrees(const std::vector<glm::vec4>& points, float height, flo
 	treeMesh = std::unique_ptr<TreeMesh>(new TreeMesh(height, width, cheight, cwidth, 12));
 }
 
+void GLState::setupRocks(const std::vector<glm::vec3>& points, float radius, float roughness = 0.2f, int slices = 12, int seed = 0) {
+	rockPoints = points;
+	rockMesh = std::unique_ptr<RockMesh>(new RockMesh(radius, roughness, slices, seed));
+}
+
 // Called when window requests a screen redraw
 void GLState::paintGL() {
 	glm::mat4 proj = glm::perspective(glm::radians(45.0f), (float) (width / (height * 1.0)), 64.0f, 2048.0f);
@@ -116,13 +121,31 @@ void GLState::paintGL() {
     glUniformMatrix4fv(glGetUniformLocation(treeShader, "view"), 1, GL_FALSE, glm::value_ptr(view));
 
 	glDisable(GL_CULL_FACE);
+
 	for (auto& point : treePoints) {
 		glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(point.x, point.y, point.z));
 		glUniformMatrix4fv(glGetUniformLocation(treeShader, "model"), 1, GL_FALSE, glm::value_ptr(model));
 	
 		glDrawElements(GL_TRIANGLES, treeMesh->getIndexCount(), GL_UNSIGNED_INT, 0);
 	}
+
+	//Render rocks
+	glUseProgram(rockShader);
+	glBindVertexArray(rockMesh->getVao());
+
+    glUniformMatrix4fv(glGetUniformLocation(rockShader, "projection"), 1, GL_FALSE, glm::value_ptr(proj));
+    glUniformMatrix4fv(glGetUniformLocation(rockShader, "view"), 1, GL_FALSE, glm::value_ptr(view));
+
+	for (auto& point : rockPoints) {
+		glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(point.x, point.y, point.z));
+		glUniformMatrix4fv(glGetUniformLocation(rockShader, "model"), 1, GL_FALSE, glm::value_ptr(model));
+	
+		glDrawElements(GL_TRIANGLES, rockMesh->getIndexCount(), GL_UNSIGNED_INT, 0);
+	}
+
 	glEnable(GL_CULL_FACE);
+
+
 	
 
 	glCullFace(GL_BACK);
@@ -201,6 +224,7 @@ void GLState::update_time(float time) {
 void GLState::initShaders() {
 	std::vector<GLuint> terrainShaders;
 	std::vector<GLuint> treeShaders;
+	std::vector<GLuint> rockShaders;
 	terrainShaders.push_back(compileShader(GL_VERTEX_SHADER, "shaders/terrain_v.glsl"));
 	terrainShaders.push_back(compileShader(GL_FRAGMENT_SHADER, "shaders/terrain_f.glsl"));
 	terrainShader = linkProgram(terrainShaders);
@@ -208,10 +232,18 @@ void GLState::initShaders() {
 	treeShaders.push_back(compileShader(GL_VERTEX_SHADER, "shaders/trees_v.glsl"));
 	treeShaders.push_back(compileShader(GL_FRAGMENT_SHADER, "shaders/trees_f.glsl"));
 	treeShader = linkProgram(treeShaders);
+
+	rockShaders.push_back(compileShader(GL_VERTEX_SHADER, "shaders/rocks_v.glsl"));
+	rockShaders.push_back(compileShader(GL_FRAGMENT_SHADER, "shaders/rocks_f.glsl"));
+	rockShader = linkProgram(rockShaders);
+
 	for (auto s : terrainShaders)
 		glDeleteShader(s);
 	terrainShaders.clear();
 	for (auto s : treeShaders)
 		glDeleteShader(s);
 	treeShaders.clear();
+	for (auto s : rockShaders)
+		glDeleteShader(s);
+	rockShaders.clear();
 }

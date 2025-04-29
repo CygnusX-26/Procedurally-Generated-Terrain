@@ -148,4 +148,26 @@ public:
         }
         return 0.01; // default freq
     }
+
+    std::vector<float> getConfigRockProp() {
+        std::vector<float> rockPropVec; // default configuration
+        bool rockProps = false;
+        for (std::string line : fileContents) {
+            if (line == "ROCK_PROPS:") {
+                rockProps = true;
+            }
+            else if (rockProps) {
+                std::stringstream ss(line);
+                std::string item;
+
+                while (std::getline(ss, item, ',')) {
+                    rockPropVec.push_back(std::stof(trim(item)));
+                }
+                
+                return rockPropVec;
+            }
+        }
+        return std::vector<float>({2.0f, 0.2f, 1337.0f});
+    }
+
 };

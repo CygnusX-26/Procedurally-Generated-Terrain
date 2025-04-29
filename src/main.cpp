@@ -70,7 +70,7 @@ int main(int argc, char** argv) {
 			if (treeNoise.hasTree(noise, 95, 35, configuration.getConfigTreeFreq())) {
 				trees.emplace_back(centeredX, noise, centeredY, treeNoise.treeHeight());
 			}
-			else if (rockNoise.hasRock(noise, 100, 0, configuration.getConfigRockFreq())) {
+			else if (rockNoise.hasRock(noise, 100, 35, configuration.getConfigRockFreq())) {
 				rocks.emplace_back(centeredX, noise, centeredY);
 			}
 		}
@@ -82,11 +82,13 @@ int main(int argc, char** argv) {
 		initGLUT(&argc, argv);
 		initMenu();
 		std::vector<float> treeProps = configuration.getConfigTreeProp();
+		std::vector<float> rockProps = configuration.getConfigRockProp();
 		// Initialize OpenGL (buffers, shaders, etc.)
 		glState = std::unique_ptr<GLState>(new GLState());
 		glState->initializeGL();
 		glState->setupTerrain(perlinNoise, WIDTH, HEIGHT);
 		glState->setupTrees(trees, treeProps[0], treeProps[1], treeProps[2], treeProps[3]);
+		glState->setupRocks(rocks, rockProps[0], rockProps[1], 12, (int) rockProps[2]);
 
 	} catch (const std::exception& e) {
 		// Handle any errors

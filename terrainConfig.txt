@@ -1,10 +1,10 @@
 # perlin noise seed
 PERLIN:
-131231
+133
 
 # how frequent peaks and valleys occur
 PERLIN_FREQ:
-5.0
+10.0
 
 # tree randomness seed
 TREE:
@@ -26,3 +26,7 @@ ROCK:
 # How frequent the rocks are
 ROCK_FREQ:
 0.001
+
+# radius, roughness, seed
+ROCK_PROPS:
+4.0, 0.2, 1.0

@@ -10,6 +10,7 @@
 #include "light.hpp"
 #include "texture.hpp"
 #include "treemesh.hpp"
+#include "rockmesh.hpp"
 
 // Manages OpenGL state, e.g. camera transform, objects, shaders
 class GLState {
@@ -47,7 +48,7 @@ public:
 	// =============================================================================
 	void setupTerrain(const std::vector<glm::vec3>& points, int width, int height); //setup terrain buffer
 	void setupTrees(const std::vector<glm::vec4>& points, float trunk_height, float trunk_width, float cone_height, float cone_width); //setup trees buffer
-	void setupRocks(const std::vector<glm::vec3>& points); //setup trees buffer
+	void setupRocks(const std::vector<glm::vec3>& points, float radius, float roughness, int slices, int seed);
 
 	// Drawing modes
 	ShadingMode getShadingMode() const { return shadingMode; }
@@ -124,6 +125,7 @@ protected:
 	GLuint depthShader;	           // Depth shader program
 	GLuint terrainShader;
 	GLuint treeShader;
+	GLuint rockShader;
 
 	GLuint terrainVao;
 	GLuint terrainVbo;
@@ -132,6 +134,9 @@ protected:
 
 	std::vector<glm::vec4> treePoints;
 	std::unique_ptr<TreeMesh> treeMesh;
+
+	std::vector<glm::vec3> rockPoints;
+	std::unique_ptr<RockMesh> rockMesh;
 	
 	float cur_time;
 };

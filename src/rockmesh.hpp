@@ -1,6 +1,7 @@
 #include <glm/glm.hpp>
 #include "gl_core_3_3.h"
 #include <vector>
+#include <random>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
@@ -18,11 +19,36 @@ public:
         LEAVES
     };
 
-    RockMesh(float radius, float roughness = 0.2f, int slices = 12 ) {
+    RockMesh(float radius, float roughness = 0.2f, int slices = 12, int seed = 0 ) {
         std::vector<glm::vec4> vertices;
         std::vector<unsigned int> indices;
 
-        //TODO
+        std::mt19937 rng(seed);
+        std::uniform_real_distribution<float> offset(-roughness, roughness);
+
+        vertices.push_back(glm::vec4(0.0f,  radius, 0.0f, 1.0f));
+        vertices.push_back(glm::vec4( radius, 0.0f, 0.0f, 1.0f));
+        vertices.push_back(glm::vec4(0.0f, 0.0f,  radius, 1.0f));
+        vertices.push_back(glm::vec4(-radius, 0.0f, 0.0f, 1.0f));
+        vertices.push_back(glm::vec4(0.0f, 0.0f, -radius, 1.0f));
+        vertices.push_back(glm::vec4(0.0f, -radius, 0.0f, 1.0f));
+
+        for (auto& v : vertices) {
+            v.x += offset(rng);
+            v.y += offset(rng);
+            v.z += offset(rng);
+        }
+
+        indices = {
+            0, 1, 2,
+            0, 2, 3,
+            0, 3, 4,
+            0, 4, 1,
+            5, 2, 1,
+            5, 3, 2,
+            5, 4, 3,
+            5, 1, 4
+        };
     
         glGenVertexArrays(1, &vao);
         glGenBuffers(1, &vbo);
