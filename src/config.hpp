@@ -2,6 +2,8 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <utility>
+#include <map>
 
 class Config {
 private:
@@ -168,6 +170,46 @@ public:
             }
         }
         return std::vector<float>({2.0f, 0.2f, 1337.0f});
+    }
+
+    /**
+     * bruh why wont this stupid c++ syntax highlighter highlight me...
+     */
+    std::pair<std::string, std::map<char, std::string>> getConfigLsystem() {
+        std::string axiom;
+        std::map<char, std::string> rules;
+        bool lsystem = false;
+        int numRules = -1;
+        for (const std::string& line : fileContents) {
+            if (line == "BIOME_SYSTEM:") {
+                lsystem = true;
+            } 
+            else if (lsystem) {
+                if (axiom.empty()) {
+                    axiom = line;
+                } else {
+                    if (numRules < 0) {
+                        numRules = std::stoi(line);
+                    }
+                    else if (numRules == 0) {
+                        break;
+                    }
+                    else {
+                        std::stringstream ss(line);
+                        size_t colonPos = line.find(':');
+                        if (colonPos != std::string::npos) {
+                            char key = line[0];
+                            std::string replacement = line.substr(colonPos + 2);
+                            rules[key] = replacement;
+                        }
+                        numRules--;
+                    }
+                    
+                }
+            }
+        }
+    
+        return std::make_pair(axiom, rules);
     }
 
 };

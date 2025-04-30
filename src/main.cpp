@@ -13,6 +13,7 @@
 #include "tree.hpp"
 #include "rock.hpp"
 #include "config.hpp"
+#include "lsystem.hpp"
 
 #define HEIGHT (512)
 #define WIDTH (512)
@@ -51,11 +52,19 @@ void cleanup();
 
 // Program entry point
 int main(int argc, char** argv) {
+
 	Config configuration("terrainConfig.txt");
+	std::pair<std::string, std::map<char, std::string>> cfg = configuration.getConfigLsystem();
+	Lsystem ls = Lsystem(cfg.first, cfg.second);
+	std::string lsString = ls.generate();
+
 	std::vector<glm::vec3> perlinNoise;
 	std::vector<glm::vec4> trees;
 	std::vector<glm::vec3> rocks;
-	PerlinNoise perlin(configuration.getConfigPerlin());
+	int perlinSeedBase = configuration.getConfigPerlin();
+	PerlinNoise perlin1(perlinSeedBase);
+	PerlinNoise perlin2(perlinSeedBase + 1);
+	PerlinNoise perlin3(perlinSeedBase + 2);
 	TreeNoise treeNoise(configuration.getConfigTree());
 	RockNoise rockNoise(configuration.getConfigRock());
 	float frequency = configuration.getConfigPerlinFreq();
@@ -63,10 +72,18 @@ int main(int argc, char** argv) {
 		for (int x = 0; x < WIDTH; ++x) {
 			double fx = x / (WIDTH * 1.0);
 			double fy = y / (HEIGHT * 1.0);
-			double noise = perlin.noise(fx, fy, frequency) * 100.0f;
+			double noise1 = perlin1.noise(fx, fy, frequency) * 100.0f;
+			double noise2 = perlin1.noise(fx, fy, frequency) * 100.0f;
+			double noise3 = perlin2.noise(fx, fy, frequency) * 100.0f;
+			double noise = (noise1 + noise2 + noise3) / 3;
 			float centeredX = x - WIDTH / 2.0f;
         	float centeredY = y - HEIGHT / 2.0f;
+
+
+			// TODO get biome from Lsystem
 			perlinNoise.emplace_back(centeredX, noise, centeredY);
+
+
 			if (treeNoise.hasTree(noise, 95, 35, configuration.getConfigTreeFreq())) {
 				trees.emplace_back(centeredX, noise, centeredY, treeNoise.treeHeight());
 			}

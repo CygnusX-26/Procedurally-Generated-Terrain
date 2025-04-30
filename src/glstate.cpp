@@ -16,7 +16,7 @@ GLState::GLState() :
 	treeMesh(nullptr),
 	camRotating(false)
 	{
-    	camCoords = glm::vec3(0.0f, 50.0f, 512.0f);
+    	camCoords = glm::vec3(0.0f, 100.0f, 512.0f);
 	}
 
 // Destructor
@@ -179,7 +179,7 @@ void GLState::endCameraRotate() {
 
 // Moves the camera toward / away from the origin (scroll wheel)
 void GLState::offsetCamera(float offset) {
-    float radius = glm::clamp(glm::length(camCoords) + offset, 512.0f, 1024.0f);
+    float radius = glm::clamp(glm::length(camCoords) + offset, 64.0f, 1024.0f);
     float theta = glm::atan(camCoords.y, camCoords.x);
     float r = glm::length(camCoords);
     float phi = glm::acos(camCoords.z / r);
