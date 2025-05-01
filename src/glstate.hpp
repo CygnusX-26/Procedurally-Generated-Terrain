@@ -46,7 +46,7 @@ public:
 	void readConfig(std::string filename);	// Read from a config file
 
 	// =============================================================================
-	void setupTerrain(const std::vector<glm::vec3>& points, int width, int height); //setup terrain buffer
+	void setupTerrain(const std::vector<glm::vec4>& points, int width, int height); //setup terrain buffer
 	void setupTrees(const std::vector<glm::vec4>& points, float trunk_height, float trunk_width, float cone_height, float cone_width); //setup trees buffer
 	void setupRocks(const std::vector<glm::vec3>& points, float radius, float roughness, int slices, int seed);
 

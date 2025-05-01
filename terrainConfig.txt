@@ -4,7 +4,7 @@ PERLIN:
 
 # how frequent peaks and valleys occur
 PERLIN_FREQ:
-2.0
+5.0
 
 # tree randomness seed
 TREE:
@@ -17,7 +17,7 @@ TREE_FREQ:
 # trunk: height, width
 # cone: height, width
 TREE_PROPS:
-3.0, 2.0, 8.0, 6.0
+3.0, 2.0, 10.0, 6.0
 
 # rock randomness seed
 ROCK:
@@ -25,7 +25,7 @@ ROCK:
 
 # How frequent the rocks are
 ROCK_FREQ:
-0.0003
+0.001
 
 # radius, roughness, seed
 ROCK_PROPS:
@@ -37,9 +37,7 @@ ROCK_PROPS:
 # R: Rocky
 # S: Snowy
 BIOME_SYSTEM:
-SFFDDFS
-4
-D: FDF
+DD
+2
+D: DDD
 F: FDF
-R: SFR
-S: RFS

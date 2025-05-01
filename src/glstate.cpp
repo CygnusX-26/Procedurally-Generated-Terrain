@@ -47,7 +47,7 @@ void GLState::initializeGL() {
 	init = true;
 }
 
-void GLState::setupTerrain(const std::vector<glm::vec3>& points, int width, int height) {
+void GLState::setupTerrain(const std::vector<glm::vec4>& points, int width, int height) {
 	terrainWidth = width;
 	terrainHeight = height;
     glGenVertexArrays(1, &terrainVao);
@@ -55,9 +55,9 @@ void GLState::setupTerrain(const std::vector<glm::vec3>& points, int width, int 
 
     glBindVertexArray(terrainVao);
     glBindBuffer(GL_ARRAY_BUFFER, terrainVbo);
-    glBufferData(GL_ARRAY_BUFFER, points.size() * sizeof(glm::vec3), points.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, points.size() * sizeof(glm::vec4), points.data(), GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), (void*)0);
     glEnableVertexAttribArray(0);
 
 

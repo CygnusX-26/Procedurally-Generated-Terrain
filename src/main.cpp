@@ -54,11 +54,13 @@ void cleanup();
 int main(int argc, char** argv) {
 
 	Config configuration("terrainConfig.txt");
+
+	int biomeWidth = 8;
 	std::pair<std::string, std::map<char, std::string>> cfg = configuration.getConfigLsystem();
 	Lsystem ls = Lsystem(cfg.first, cfg.second);
-	std::string lsString = ls.generate();
-
-	std::vector<glm::vec3> perlinNoise;
+	std::string lsString = ls.generate(biomeWidth * biomeWidth);
+	std::cout <<lsString << std::endl;
+	std::vector<glm::vec4> perlinNoise;
 	std::vector<glm::vec4> trees;
 	std::vector<glm::vec3> rocks;
 	int perlinSeedBase = configuration.getConfigPerlin();
@@ -68,6 +70,8 @@ int main(int argc, char** argv) {
 	TreeNoise treeNoise(configuration.getConfigTree());
 	RockNoise rockNoise(configuration.getConfigRock());
 	float frequency = configuration.getConfigPerlinFreq();
+	int biomeBlend = 6;
+	int biomeGridWidth = WIDTH / (biomeWidth * biomeWidth);
 	for (int y = 0; y < HEIGHT; ++y) {
 		for (int x = 0; x < WIDTH; ++x) {
 			double fx = x / (WIDTH * 1.0);
@@ -75,16 +79,29 @@ int main(int argc, char** argv) {
 			double noise1 = perlin1.noise(fx, fy, frequency) * 100.0f;
 			double noise2 = perlin1.noise(fx, fy, frequency) * 100.0f;
 			double noise3 = perlin2.noise(fx, fy, frequency) * 100.0f;
+
 			double noise = (noise1 + noise2 + noise3) / 3;
 			float centeredX = x - WIDTH / 2.0f;
         	float centeredY = y - HEIGHT / 2.0f;
+			int biomeX = x / (biomeWidth * biomeWidth);
+			int biomeY = y / (biomeWidth * biomeWidth);
 
+			int up = (y - biomeBlend) / (biomeWidth * biomeWidth);
+			int down = (y + biomeBlend) / (biomeWidth * biomeWidth);
+			int left = (x - biomeBlend) / (biomeWidth * biomeWidth);
+			int right = (x + biomeBlend) / (biomeWidth * biomeWidth);
+			
+			int biome = Lsystem::getBiomeFromChar(lsString[ biomeY * biomeGridWidth + biomeX]);
+			int biomeUp = Lsystem::getBiomeFromChar(lsString[ up * biomeGridWidth + biomeX]);
+			int biomeDown = Lsystem::getBiomeFromChar(lsString[ down * biomeGridWidth + biomeX]);
+			int biomeLeft  = Lsystem::getBiomeFromChar(lsString[ biomeY * biomeGridWidth + left]);
+			int biomeRight = Lsystem::getBiomeFromChar(lsString[ biomeY * biomeGridWidth + right]);
 
-			// TODO get biome from Lsystem
-			perlinNoise.emplace_back(centeredX, noise, centeredY);
-
-
-			if (treeNoise.hasTree(noise, 95, 35, configuration.getConfigTreeFreq())) {
+			float sum = (biome + biomeUp + biomeDown + biomeLeft + biomeRight);
+			float avgBiome = (sum > 5.0f ? 5.0f : sum) / 5.0f;
+			
+			perlinNoise.emplace_back(centeredX, noise, centeredY, avgBiome);
+			if (treeNoise.hasTree(noise, 95, 35, configuration.getConfigTreeFreq()) && biome != 0) {
 				trees.emplace_back(centeredX, noise, centeredY, treeNoise.treeHeight());
 			}
 			else if (rockNoise.hasRock(noise, 100, 35, configuration.getConfigRockFreq())) {

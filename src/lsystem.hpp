@@ -2,6 +2,7 @@
 #include <map>
 #include <memory>
 #include <iostream>
+#include <random>
 
 using namespace std;
 
@@ -10,13 +11,6 @@ private:
     std::string lsystem;
     std::map<char, std::string> rules;
 public:
-
-    enum BiomeType {
-        DESERT,
-        FOREST,
-        ROCKY,
-        SNOWY
-    };
 
     Lsystem(std::string begin, std::map<char, std::string> rules) {
         lsystem = begin;
@@ -41,5 +35,16 @@ public:
             result = std::move(tmp);
         }
         return result.substr(0, max_output_val);
+    }
+
+    static int getBiomeFromChar(char type) {
+        switch (type) {
+            case 'D':
+                return 0;
+            case 'F':
+                return 1;
+            default:
+                return 0;
+        }
     }
 };
