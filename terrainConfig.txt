@@ -31,13 +31,17 @@ ROCK_FREQ:
 ROCK_PROPS:
 4.0, 0.2, 1.0
 
+# biome seed used if not using LSystem
+BIOME:
+1337
+
 
 # D: Desert
 # F: grassy / forest
 # R: Rocky
 # S: Snowy
 BIOME_SYSTEM:
-DD
+DDDDDDD
 2
-D: DDD
-F: FDF
+D: DD
+F: FF

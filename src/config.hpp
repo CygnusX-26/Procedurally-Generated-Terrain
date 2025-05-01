@@ -47,9 +47,11 @@ private:
     }
 public:
     std::vector<std::string> fileContents;
+    bool hasLsystem;
 
     Config(std::string fileName) {
         fileContents = preprocessFile(fileName);
+        hasLsystem = false;
     }
 
     int getConfigPerlin() {
@@ -172,6 +174,19 @@ public:
         return std::vector<float>({2.0f, 0.2f, 1337.0f});
     }
 
+    int getConfigBiome() {
+        bool biome = false;
+        for (std::string line : fileContents) {
+            if (line == "BIOME:") {
+                biome = true;
+            }
+            else if (biome) {
+                return std::stoi(line);
+            }
+        }
+        return 1337; // default seed
+    }
+
     /**
      * bruh why wont this stupid c++ syntax highlighter highlight me...
      */
@@ -183,6 +198,7 @@ public:
         for (const std::string& line : fileContents) {
             if (line == "BIOME_SYSTEM:") {
                 lsystem = true;
+                hasLsystem = true;
             } 
             else if (lsystem) {
                 if (axiom.empty()) {
