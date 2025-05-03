@@ -3,6 +3,8 @@
 
 Averaged perlin noise to generate terrain with biomes, trees and rocks.
 
+![example](image.png)
+
 
 Built based off the FreeGLUT template code for CS334
 
