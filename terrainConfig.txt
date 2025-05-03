@@ -40,8 +40,8 @@ BIOME:
 # F: grassy / forest
 # R: Rocky
 # S: Snowy
-BIOME_SYSTEM:
-DDDDDDD
-2
-D: DD
-F: FF
+#BIOME_SYSTEM:
+#FFDDFFFFD
+#2
+#D: FDDFF
+#F: DDF

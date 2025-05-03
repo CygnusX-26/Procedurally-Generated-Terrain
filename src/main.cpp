@@ -59,6 +59,7 @@ int main(int argc, char** argv) {
 	std::pair<std::string, std::map<char, std::string>> cfg = configuration.getConfigLsystem();
 	Lsystem ls = Lsystem(cfg.first, cfg.second);
 	std::string lsString = ls.generate(biomeWidth * biomeWidth);
+	std::cout << lsString << std::endl;
 	std::vector<glm::vec4> perlinNoise;
 	std::vector<glm::vec4> trees;
 	std::vector<glm::vec3> rocks;
